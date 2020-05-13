@@ -3,12 +3,16 @@ package com.andrognito.pinlockview;
 import android.animation.LayoutTransition;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.support.annotation.IntDef;
-import android.support.v4.view.ViewCompat;
+import android.transition.ChangeBounds;
+import android.transition.TransitionManager;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+
+import androidx.annotation.IntDef;
+import androidx.core.view.ViewCompat;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -37,7 +41,7 @@ public class IndicatorDots extends LinearLayout {
     private int mEmptyDrawable;
     private int mPinLength;
     private int mIndicatorType;
-
+    private ChangeBounds changeBounds;
     private int mPreviousLength;
 
     public IndicatorDots(Context context) {
@@ -70,18 +74,28 @@ public class IndicatorDots extends LinearLayout {
         initView(context);
     }
 
+//    @Override
+//    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+//        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+//        int height = mDotDiameter*2;
+//        int width = MeasureSpec.getSize(widthMeasureSpec);
+//        setMeasuredDimension(width, height);
+//    }
+
     private void initView(Context context) {
+        changeBounds = new ChangeBounds();
+        changeBounds.setDuration(50);
+        setMinimumHeight(mDotDiameter*2);
         ViewCompat.setLayoutDirection(this, ViewCompat.LAYOUT_DIRECTION_LTR);
         if (mIndicatorType == 0) {
             for (int i = 0; i < mPinLength; i++) {
                 View dot = new View(context);
-                emptyDot(dot);
-
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(mDotDiameter,
                         mDotDiameter);
+                params.gravity = Gravity.CENTER_VERTICAL;
                 params.setMargins(mDotSpacing, 0, mDotSpacing, 0);
                 dot.setLayoutParams(params);
-
+                emptyDot(dot);
                 addView(dot);
             }
         } else if (mIndicatorType == 2) {
@@ -140,11 +154,29 @@ public class IndicatorDots extends LinearLayout {
         }
     }
 
+    private void completeDot() {
+        for (int i = 0; i < mPinLength; i++) {
+            View dot = getChildAt(i);
+//            dot.setBackgroundResource();
+        }
+    }
+
     private void emptyDot(View dot) {
+        TransitionManager.beginDelayedTransition(this, changeBounds);
+        LayoutParams params = (LayoutParams) dot.getLayoutParams();
+        params.height = mDotDiameter;
+        params.gravity = Gravity.CENTER_VERTICAL;
+        dot.setLayoutParams(params);
+//        params.setMargins(mDotSpacing, 0, mDotSpacing, 0);
         dot.setBackgroundResource(mEmptyDrawable);
     }
 
     private void fillDot(View dot) {
+        TransitionManager.beginDelayedTransition(this, changeBounds);
+        LayoutParams params = (LayoutParams) dot.getLayoutParams();
+        params.height = 2*mDotDiameter;
+//        params.setMargins(mDotSpacing, 0, mDotSpacing, 0);
+        dot.setLayoutParams(params);
         dot.setBackgroundResource(mFillDrawable);
     }
 

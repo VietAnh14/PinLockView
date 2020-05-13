@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/mine_shaft"
+    android:background="@color/white"
     tools:context="com.andrognito.pinlockviewapp.SampleActivity">
 
     <ImageView
@@ -38,6 +38,10 @@
         android:layout_marginTop="36dp" />
 
     <com.andrognito.pinlockview.PinLockView
+        app:pinLength="6"
+        app:indicatorType="fillWithAnimation"
+        app:dotEmptyBackground="@drawable/pincode_bg"
+        app:dotFilledBackground="@drawable/filled_pin_bg"
         android:id="@+id/pin_lock_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
